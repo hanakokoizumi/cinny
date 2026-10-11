@@ -1,3 +1,5 @@
+import { newSessionStores, rememberSessionStores } from '../../client/sessionStorage';
+
 // import { atom } from 'jotai';
 // import {
 //   atomWithLocalStorage,
@@ -35,6 +37,8 @@ export function setFallbackSession(
   userId: string,
   baseUrl: string
 ) {
+  const session = { baseUrl, userId, deviceId };
+  rememberSessionStores(session, newSessionStores(session));
   localStorage.setItem('cinny_access_token', accessToken);
   localStorage.setItem('cinny_device_id', deviceId);
   localStorage.setItem('cinny_user_id', userId);

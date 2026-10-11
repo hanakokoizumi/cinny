@@ -18,6 +18,7 @@ import FocusTrap from 'focus-trap-react';
 import React, { MouseEventHandler, ReactNode, useCallback, useEffect, useState } from 'react';
 import {
   clearCacheAndReload,
+  clearClientSession,
   clearLoginData,
   initClient,
   logoutClient,
@@ -126,10 +127,7 @@ function ClientRootOptions({ mx }: { mx?: MatrixClient }) {
 const useLogoutListener = (mx?: MatrixClient) => {
   useEffect(() => {
     const handleLogout: HttpApiEventHandlerMap[HttpApiEvent.SessionLoggedOut] = async () => {
-      mx?.stopClient();
-      await mx?.clearStores();
-      window.localStorage.clear();
-      window.location.reload();
+      if (mx) await clearClientSession(mx);
     };
 
     mx?.on(HttpApiEvent.SessionLoggedOut, handleLogout);
@@ -159,18 +157,24 @@ export function ClientRoot({ children }: ClientRootProps) {
   const [startState, startMatrix] = useAsyncCallback<void, Error, [MatrixClient]>(
     useCallback((m) => startClient(m), [])
   );
+  const failed = loadState.status === AsyncStatus.Error || startState.status === AsyncStatus.Error;
 
   useLogoutListener(mx);
 
   useEffect(() => {
     if (loadState.status === AsyncStatus.Idle) {
-      loadMatrix();
+      // The hook owns the error state displayed below.
+      loadMatrix().catch(() => {
+        // The hook displays this failure.
+      });
     }
   }, [loadState, loadMatrix]);
 
   useEffect(() => {
     if (mx && !mx.clientRunning) {
-      startMatrix(mx);
+      startMatrix(mx).catch(() => {
+        // The hook displays this failure.
+      });
     }
   }, [mx, startMatrix]);
 
@@ -188,7 +192,7 @@ export function ClientRoot({ children }: ClientRootProps) {
       <SpecVersions baseUrl={baseUrl!}>
         {mx && <SyncStatus mx={mx} />}
         {loading && <ClientRootOptions mx={mx} />}
-        {(loadState.status === AsyncStatus.Error || startState.status === AsyncStatus.Error) && (
+        {failed && (
           <SplashScreen>
             <Box
               direction="Column"
@@ -205,7 +209,14 @@ export function ClientRoot({ children }: ClientRootProps) {
                   {startState.status === AsyncStatus.Error && (
                     <Text>{`Failed to start. ${startState.error.message}`}</Text>
                   )}
-                  <Button variant="Critical" onClick={mx ? () => startMatrix(mx) : loadMatrix}>
+                  <Button
+                    variant="Critical"
+                    onClick={() =>
+                      (mx ? startMatrix(mx) : loadMatrix()).catch(() => {
+                        // The hook displays this failure.
+                      })
+                    }
+                  >
                     <Text as="span" size="B400">
                       Retry
                     </Text>
@@ -215,23 +226,24 @@ export function ClientRoot({ children }: ClientRootProps) {
             </Box>
           </SplashScreen>
         )}
-        {loading || !mx ? (
-          <ClientRootLoading />
-        ) : (
-          <MatrixClientProvider value={mx}>
-            <ServerConfigsLoader>
-              {(serverConfigs) => (
-                <CapabilitiesProvider value={serverConfigs.capabilities ?? {}}>
-                  <MediaConfigProvider value={serverConfigs.mediaConfig ?? {}}>
-                    <AuthMetadataProvider value={serverConfigs.authMetadata}>
-                      {children}
-                    </AuthMetadataProvider>
-                  </MediaConfigProvider>
-                </CapabilitiesProvider>
-              )}
-            </ServerConfigsLoader>
-          </MatrixClientProvider>
-        )}
+        {!failed &&
+          (loading || !mx ? (
+            <ClientRootLoading />
+          ) : (
+            <MatrixClientProvider value={mx}>
+              <ServerConfigsLoader>
+                {(serverConfigs) => (
+                  <CapabilitiesProvider value={serverConfigs.capabilities ?? {}}>
+                    <MediaConfigProvider value={serverConfigs.mediaConfig ?? {}}>
+                      <AuthMetadataProvider value={serverConfigs.authMetadata}>
+                        {children}
+                      </AuthMetadataProvider>
+                    </MediaConfigProvider>
+                  </CapabilitiesProvider>
+                )}
+              </ServerConfigsLoader>
+            </MatrixClientProvider>
+          ))}
       </SpecVersions>
     </AutoDiscovery>
   );

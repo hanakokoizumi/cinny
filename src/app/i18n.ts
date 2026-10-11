@@ -19,6 +19,7 @@ i18n
   .init<HttpBackendOptions>({
     debug: false,
     fallbackLng: 'en',
+    supportedLngs: ['en', 'de', 'zh'],
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
     },
