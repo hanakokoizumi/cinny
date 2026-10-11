@@ -4,6 +4,7 @@ import { onDarkFontWeight, onLightFontWeight } from '../../config.css';
 import { butterTheme, darkTheme, silverTheme } from '../../colors.css';
 import { settingsAtom } from '../state/settings';
 import { useSetting } from '../state/hooks/settings';
+import { nightcordDark, nightcordLight } from '../../nightcord/theme.css';
 
 export enum ThemeKind {
   Light = 'light',
@@ -19,7 +20,7 @@ export type Theme = {
 export const LightTheme: Theme = {
   id: 'light-theme',
   kind: ThemeKind.Light,
-  classNames: [lightTheme, onLightFontWeight, 'prism-light'],
+  classNames: [lightTheme, nightcordLight, onLightFontWeight, 'prism-light'],
 };
 
 export const SilverTheme: Theme = {
@@ -30,7 +31,7 @@ export const SilverTheme: Theme = {
 export const DarkTheme: Theme = {
   id: 'dark-theme',
   kind: ThemeKind.Dark,
-  classNames: ['dark-theme', darkTheme, onDarkFontWeight, 'prism-dark'],
+  classNames: ['dark-theme', darkTheme, nightcordDark, onDarkFontWeight, 'prism-dark'],
 };
 export const ButterTheme: Theme = {
   id: 'butter-theme',
@@ -47,9 +48,9 @@ export const useThemes = (): Theme[] => {
 export const useThemeNames = (): Record<string, string> =>
   useMemo(
     () => ({
-      [LightTheme.id]: 'Light',
+      [LightTheme.id]: 'Nightcord Light',
       [SilverTheme.id]: 'Silver',
-      [DarkTheme.id]: 'Dark',
+      [DarkTheme.id]: 'Nightcord Dark',
       [ButterTheme.id]: 'Butter',
     }),
     []

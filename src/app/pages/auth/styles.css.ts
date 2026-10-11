@@ -6,13 +6,12 @@ export const AuthLayout = style({
   backgroundColor: color.Background.Container,
   color: color.Background.OnContainer,
   padding: config.space.S400,
-  paddingRight: config.space.S200,
-  paddingBottom: 0,
+  paddingBottom: config.space.S400,
   position: 'relative',
 });
 
 export const AuthCard = style({
-  marginTop: '1vh',
+  marginTop: 'clamp(12px, 8vh, 96px)',
   maxWidth: toRem(460),
   width: '100%',
   backgroundColor: color.Surface.Container,
@@ -20,6 +19,7 @@ export const AuthCard = style({
   borderRadius: config.radii.R400,
   boxShadow: config.shadow.E100,
   border: `${config.borderWidth.B300} solid ${color.Surface.ContainerLine}`,
+  backdropFilter: 'blur(18px)',
   overflow: 'hidden',
 });
 
@@ -36,6 +36,7 @@ export const AuthLogo = style([
 export const AuthHeader = style({
   padding: `0 ${config.space.S400}`,
   borderBottomWidth: config.borderWidth.B300,
+  backgroundColor: 'transparent',
 });
 
 export const AuthCardContent = style({
@@ -49,5 +50,9 @@ export const AuthCardContent = style({
 });
 
 export const AuthFooter = style({
-  padding: config.space.S200,
+  padding: config.space.S300,
+  backgroundColor: 'var(--nc-panel-bg)',
+  border: '1px solid var(--nc-panel-border)',
+  borderRadius: 'var(--nc-radius-md)',
+  backdropFilter: 'blur(18px)',
 });

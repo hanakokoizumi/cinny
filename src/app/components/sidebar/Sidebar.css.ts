@@ -7,8 +7,11 @@ export const Sidebar = style([
   DefaultReset,
   {
     width: toRem(66),
-    backgroundColor: color.Background.Container,
-    borderRight: `${config.borderWidth.B300} solid ${color.Background.ContainerLine}`,
+    backgroundColor: 'var(--nc-panel-bg)',
+    border: '1px solid var(--nc-panel-border)',
+    borderRadius: 'var(--nc-radius-md)',
+    boxShadow: 'var(--nc-panel-shadow)',
+    backdropFilter: 'blur(18px)',
 
     display: 'flex',
     flexDirection: 'column',

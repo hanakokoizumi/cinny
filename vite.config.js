@@ -14,6 +14,14 @@ import buildConfig from './build.config';
 const copyFiles = {
   targets: [
     {
+      src: 'public/res/nightcord/*',
+      dest: 'public/res/nightcord',
+    },
+    {
+      src: 'public/stickers/sekai/*.{png,webp}',
+      dest: 'public/stickers/sekai',
+    },
+    {
       src: 'node_modules/@element-hq/element-call-embedded/dist/*',
       dest: 'public/element-call',
     },

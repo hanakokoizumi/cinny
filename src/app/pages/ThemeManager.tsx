@@ -10,13 +10,14 @@ import {
 } from '../hooks/useTheme';
 import { useSetting } from '../state/hooks/settings';
 import { settingsAtom } from '../state/settings';
+import { nightcordConfig } from '../../nightcord/theme.css';
 
 export function UnAuthRouteThemeManager() {
   const systemThemeKind = useSystemThemeKind();
 
   useEffect(() => {
     document.body.className = '';
-    document.body.classList.add(configClass, varsClass);
+    document.body.classList.add(configClass, varsClass, nightcordConfig);
     if (systemThemeKind === ThemeKind.Dark) {
       document.body.classList.add(...DarkTheme.classNames);
     }
@@ -34,7 +35,7 @@ export function AuthRouteThemeManager({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     document.body.className = '';
-    document.body.classList.add(configClass, varsClass);
+    document.body.classList.add(configClass, varsClass, nightcordConfig);
 
     document.body.classList.add(...activeTheme.classNames);
 

@@ -7,12 +7,14 @@ type SearchInputProps = {
   onChange: ChangeEventHandler<HTMLInputElement>;
   allowTextCustomEmoji?: boolean;
   onTextCustomEmojiSelect?: (text: string) => void;
+  autoFocus?: boolean;
 };
 export function SearchInput({
   query,
   onChange,
   allowTextCustomEmoji,
   onTextCustomEmojiSelect,
+  autoFocus = !mobileOrTablet(),
 }: SearchInputProps) {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -45,7 +47,7 @@ export function SearchInput({
         )
       }
       onChange={onChange}
-      autoFocus={!mobileOrTablet()}
+      autoFocus={autoFocus}
     />
   );
 }

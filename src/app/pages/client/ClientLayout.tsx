@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import { Box } from 'folds';
+import { shell } from '../../../nightcord/theme.css';
 
 type ClientLayoutProps = {
   nav: ReactNode;
@@ -7,7 +8,7 @@ type ClientLayoutProps = {
 };
 export function ClientLayout({ nav, children }: ClientLayoutProps) {
   return (
-    <Box grow="Yes">
+    <Box grow="Yes" className={shell}>
       <Box shrink="No">{nav}</Box>
       <Box grow="Yes">{children}</Box>
     </Box>

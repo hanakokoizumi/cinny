@@ -1,10 +1,12 @@
 import React from 'react';
 import { Box, Text, IconButton, Icon, Icons, Scroll, Button, config, toRem } from 'folds';
+import { APP_NAME, APP_VERSION, APP_DESCRIPTION } from '../../../../nightcord/brand';
+import { logo } from '../../../../nightcord/theme.css';
 import { Page, PageContent, PageHeader } from '../../../components/page';
 import { SequenceCard } from '../../../components/sequence-card';
 import { SequenceCardStyle } from '../styles.css';
 import { SettingTile } from '../../../components/setting-tile';
-import CinnySVG from '../../../../../public/res/svg/cinny.svg';
+import NightcordSVG from '../../../../../public/res/svg/nightcord.svg';
 import { clearCacheAndReload } from '../../../../client/initMatrix';
 import { useMatrixClient } from '../../../hooks/useMatrixClient';
 
@@ -37,24 +39,25 @@ export function About({ requestClose }: AboutProps) {
               <Box gap="400">
                 <Box shrink="No">
                   <img
+                    className={logo}
                     style={{ width: toRem(60), height: toRem(60) }}
-                    src={CinnySVG}
-                    alt="Cinny logo"
+                    src={NightcordSVG}
+                    alt="Nightcord logo"
                   />
                 </Box>
                 <Box direction="Column" gap="300">
                   <Box direction="Column" gap="100">
                     <Box gap="100" alignItems="End">
-                      <Text size="H3">Cinny</Text>
-                      <Text size="T200">v4.12.7</Text>
+                      <Text size="H3">{APP_NAME}</Text>
+                      <Text size="T200">v{APP_VERSION}</Text>
                     </Box>
-                    <Text>Yet another matrix client.</Text>
+                    <Text>{APP_DESCRIPTION} Based on Cinny.</Text>
                   </Box>
 
                   <Box gap="200" wrap="Wrap">
                     <Button
                       as="a"
-                      href="https://github.com/cinnyapp/cinny"
+                      href="https://github.com/hanakokoizumi/cinny"
                       rel="noreferrer noopener"
                       target="_blank"
                       variant="Secondary"

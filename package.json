@@ -1,7 +1,7 @@
 {
   "name": "cinny",
-  "version": "4.12.7",
-  "description": "Yet another matrix client",
+  "version": "4.12.7-nightcord",
+  "description": "Nightcord — a Matrix client matching the Nightcord Mastodon theme",
   "main": "index.js",
   "type": "module",
   "engines": {
@@ -11,7 +11,7 @@
     "start": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "npm run check:eslint && npm run check:prettier",
+    "lint": "pnpm check:eslint && pnpm check:prettier",
     "check:eslint": "eslint src/*",
     "check:prettier": "prettier --check .",
     "fix:prettier": "prettier --write .",
@@ -37,6 +37,7 @@
     "@atlaskit/pragmatic-drag-and-drop-auto-scroll": "1.3.0",
     "@atlaskit/pragmatic-drag-and-drop-hitbox": "1.0.3",
     "@fontsource/inter": "4.5.14",
+    "@matrix-org/matrix-sdk-crypto-wasm": "18.3.1",
     "@tanstack/react-query": "5.24.1",
     "@tanstack/react-query-devtools": "5.24.1",
     "@tanstack/react-virtual": "3.2.0",
@@ -54,6 +55,7 @@
     "domhandler": "5.0.3",
     "emojibase": "15.3.1",
     "emojibase-data": "15.3.2",
+    "events": "3.3.0",
     "file-saver": "2.0.5",
     "focus-trap-react": "10.0.2",
     "folds": "2.7.2",
@@ -124,5 +126,6 @@
     "vite-plugin-pwa": "0.20.5",
     "vite-plugin-static-copy": "1.0.4",
     "vite-plugin-top-level-await": "1.4.4"
-  }
+  },
+  "packageManager": "pnpm@11.28.4"
 }

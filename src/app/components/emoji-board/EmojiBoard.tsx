@@ -6,10 +6,11 @@ import React, {
   RefObject,
   useCallback,
   useEffect,
+  useId,
   useMemo,
   useRef,
 } from 'react';
-import { Box, config, Icons, Scroll } from 'folds';
+import { Box, Button, config, Icons, Scroll, Spinner, Text } from 'folds';
 import FocusTrap from 'focus-trap-react';
 import { isKeyHotkey } from 'is-hotkey';
 import { Room } from 'matrix-js-sdk';
@@ -52,6 +53,9 @@ import {
 } from './components';
 import { EmojiBoardTab, EmojiType } from './types';
 import { VirtualTile } from '../virtualizer';
+import { resolveStickerUrl } from '../../../nightcord/stickers';
+import { useBuiltinStickerPacks } from '../../hooks/useBuiltinStickerPacks';
+import { mobileOrTablet } from '../../utils/user-agent';
 
 const RECENT_GROUP_ID = 'recent_group';
 const SEARCH_GROUP_ID = 'search_group';
@@ -112,7 +116,7 @@ const useGroups = (
 
   const stickerGroupItems = useMemo(() => {
     const g: StickerGroupItem[] = [];
-    if (tab !== EmojiBoardTab.Sticker) return g;
+    if (tab === EmojiBoardTab.Emoji) return g;
 
     imagePacks.forEach((pack) => {
       let label = pack.meta.name;
@@ -141,7 +145,7 @@ const useItemRenderer = (tab: EmojiBoardTab) => {
     if ('unicode' in emoji) {
       return <EmojiItem key={emoji.unicode + index} emoji={emoji} />;
     }
-    if (tab === EmojiBoardTab.Sticker) {
+    if (tab !== EmojiBoardTab.Emoji) {
       return (
         <StickerItem
           key={emoji.shortcode + index}
@@ -265,7 +269,7 @@ function StickerSidebar({ activeGroupAtom, packs, onScrollToGroup }: StickerSide
           if (!label) label = isUserId(pack.id) ? 'Personal Pack' : mx.getRoom(pack.id)?.name;
 
           const url =
-            mxcUrlToHttp(mx, pack.getAvatarUrl(usage) ?? '', useAuthentication) ?? undefined;
+            resolveStickerUrl(mx, pack.getAvatarUrl(usage) ?? '', useAuthentication) ?? undefined;
 
           return (
             <ImageGroupIcon
@@ -379,15 +383,23 @@ export function EmojiBoard({
   const mx = useMatrixClient();
 
   const emojiTab = tab === EmojiBoardTab.Emoji;
+  const sekaiTab = tab === EmojiBoardTab.SekaiSticker;
+  const panelId = useId();
+  const initialOpen = useRef(true);
+  useEffect(() => {
+    initialOpen.current = false;
+  }, []);
   const usage = emojiTab ? ImageUsage.Emoticon : ImageUsage.Sticker;
 
   const previewAtom = useMemo(
-    () => createPreviewDataAtom(emojiTab ? DefaultEmojiPreview : undefined),
-    [emojiTab]
+    () => createPreviewDataAtom(tab === EmojiBoardTab.Emoji ? DefaultEmojiPreview : undefined),
+    [tab]
   );
   const activeGroupIdAtom = useMemo(() => atom<string | undefined>(undefined), []);
   const setActiveGroupId = useSetAtom(activeGroupIdAtom);
-  const imagePacks = useRelevantImagePacks(usage, imagePackRooms);
+  const userPacks = useRelevantImagePacks(usage, imagePackRooms);
+  const builtin = useBuiltinStickerPacks(sekaiTab);
+  const imagePacks = sekaiTab ? builtin.packs : userPacks;
   const [emojiGroupItems, stickerGroupItems] = useGroups(tab, imagePacks);
   const groups = emojiTab ? emojiGroupItems : stickerGroupItems;
   const renderItem = useItemRenderer(tab);
@@ -505,9 +517,12 @@ export function EmojiBoard({
       <EmojiBoardLayout
         header={
           <Box direction="Column" gap="200">
-            {onTabChange && <EmojiBoardTabs tab={tab} onTabChange={onTabChange} />}
+            {onTabChange && (
+              <EmojiBoardTabs tab={tab} onTabChange={onTabChange} panelId={panelId} />
+            )}
             <SearchInput
               key={tab}
+              autoFocus={initialOpen.current && !mobileOrTablet()}
               query={result?.query}
               onChange={handleOnChange}
               allowTextCustomEmoji={allowTextCustomEmoji}
@@ -531,7 +546,7 @@ export function EmojiBoard({
           )
         }
       >
-        <Box grow="Yes">
+        <Box grow="Yes" id={panelId} role={onTabChange ? 'tabpanel' : undefined}>
           <EmojiGroupHolder
             key={tab}
             contentScrollRef={contentScrollRef}
@@ -571,6 +586,28 @@ export function EmojiBoard({
               })}
             </div>
             {tab === EmojiBoardTab.Sticker && groups.length === 0 && <NoStickerPacks />}
+            {sekaiTab && groups.length === 0 && (
+              <Box
+                direction="Column"
+                alignItems="Center"
+                gap="300"
+                style={{ padding: config.space.S500 }}
+              >
+                {builtin.failed ? (
+                  <>
+                    <Text align="Center">Could not load SEKAI stickers.</Text>
+                    <Button size="300" onClick={builtin.retry}>
+                      <Text size="B300">Retry</Text>
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Spinner size="400" />
+                    <Text align="Center">Loading SEKAI stickers…</Text>
+                  </>
+                )}
+              </Box>
+            )}
           </EmojiGroupHolder>
         </Box>
         <Preview previewAtom={previewAtom} />

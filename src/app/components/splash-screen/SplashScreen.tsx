@@ -1,6 +1,7 @@
 import { Box, Text } from 'folds';
 import React, { ReactNode } from 'react';
 import classNames from 'classnames';
+import { APP_NAME } from '../../../nightcord/brand';
 import * as patternsCSS from '../../styles/Patterns.css';
 import * as css from './SplashScreen.css';
 
@@ -21,7 +22,7 @@ export function SplashScreen({ children }: SplashScreenProps) {
         justifyContent="Center"
       >
         <Text size="H2" align="Center">
-          Cinny
+          {APP_NAME}
         </Text>
       </Box>
     </Box>

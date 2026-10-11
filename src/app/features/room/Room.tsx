@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { Box, Line } from 'folds';
+import { Box } from 'folds';
 import { useParams } from 'react-router-dom';
 import { isKeyHotkey } from 'is-hotkey';
 import { useAtomValue } from 'jotai';
@@ -20,6 +20,7 @@ import { callChatAtom } from '../../state/callEmbed';
 import { CallChatView } from './CallChatView';
 import { useCallEmbed } from '../../hooks/useCallEmbed';
 import { useCallMembers, useCallSession } from '../../hooks/useCall';
+import { roomLayout, roomPanel } from '../../../nightcord/theme.css';
 
 export function Room() {
   const { eventId } = useParams();
@@ -53,9 +54,9 @@ export function Room() {
 
   return (
     <PowerLevelsContextProvider value={powerLevels}>
-      <Box grow="Yes">
+      <Box grow="Yes" className={roomLayout}>
         {callView && (screenSize === ScreenSize.Desktop || !chat) && (
-          <Box grow="Yes" direction="Column">
+          <Box grow="Yes" direction="Column" className={roomPanel}>
             <RoomViewHeader callView />
             <Box grow="Yes">
               <CallView />
@@ -63,7 +64,7 @@ export function Room() {
           </Box>
         )}
         {!callView && (
-          <Box grow="Yes" direction="Column">
+          <Box grow="Yes" direction="Column" className={roomPanel}>
             <RoomViewHeader />
             <Box grow="Yes">
               <RoomView eventId={eventId} />
@@ -71,19 +72,11 @@ export function Room() {
           </Box>
         )}
 
-        {callView && chat && (
-          <>
-            {screenSize === ScreenSize.Desktop && (
-              <Line variant="Background" direction="Vertical" size="300" />
-            )}
-            <CallChatView />
-          </>
-        )}
+        {callView && chat && <CallChatView />}
         {!callView && screenSize === ScreenSize.Desktop && isDrawer && (
-          <>
-            <Line variant="Background" direction="Vertical" size="300" />
+          <Box shrink="No" className={roomPanel}>
             <MembersDrawer key={room.roomId} room={room} members={members} />
-          </>
+          </Box>
         )}
       </Box>
     </PowerLevelsContextProvider>

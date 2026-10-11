@@ -9,6 +9,7 @@ import {
   useParams,
 } from 'react-router-dom';
 import classNames from 'classnames';
+import { APP_NAME } from '../../../nightcord/brand';
 
 import { AuthFooter } from './AuthFooter';
 import * as css from './styles.css';
@@ -20,7 +21,7 @@ import {
 } from '../../hooks/useClientConfig';
 import { AsyncStatus, useAsyncCallback } from '../../hooks/useAsyncCallback';
 import { LOGIN_PATH, REGISTER_PATH, RESET_PASSWORD_PATH } from '../paths';
-import CinnySVG from '../../../../public/res/svg/cinny.svg';
+import NightcordSVG from '../../../../public/res/svg/nightcord.svg';
 import { ServerPicker } from './ServerPicker';
 import { AutoDiscoveryAction, autoDiscovery } from '../../cs-api';
 import { SpecVersionsLoader } from '../../components/SpecVersionsLoader';
@@ -134,8 +135,8 @@ export function AuthLayout() {
         <Box direction="Column" className={css.AuthCard}>
           <Header className={css.AuthHeader} size="600" variant="Surface">
             <Box grow="Yes" direction="Row" gap="300" alignItems="Center">
-              <img className={css.AuthLogo} src={CinnySVG} alt="Cinny Logo" />
-              <Text size="H3">Cinny</Text>
+              <img className={css.AuthLogo} src={NightcordSVG} alt="Nightcord Logo" />
+              <Text size="H3">{APP_NAME}</Text>
             </Box>
           </Header>
           <Box className={css.AuthCardContent} direction="Column">

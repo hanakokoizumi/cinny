@@ -117,6 +117,7 @@ import { useTheme } from '../../hooks/useTheme';
 import { useRoomCreatorsTag } from '../../hooks/useRoomCreatorsTag';
 import { usePowerLevelTags } from '../../hooks/usePowerLevelTags';
 import { useComposingCheck } from '../../hooks/useComposingCheck';
+import { getBuiltinSticker, uploadBuiltinSticker } from '../../../nightcord/stickers';
 
 interface RoomInputProps {
   editor: Editor;
@@ -127,6 +128,7 @@ interface RoomInputProps {
 export const RoomInput = forwardRef<HTMLDivElement, RoomInputProps>(
   ({ editor, fileDropContainerRef, roomId, room }, ref) => {
     const mx = useMatrixClient();
+    const [stickerError, setStickerError] = useState<string>();
     const useAuthentication = useMediaAuthentication();
     const [enterForNewline] = useSetting(settingsAtom, 'enterForNewline');
     const [isMarkdown] = useSetting(settingsAtom, 'isMarkdown');
@@ -431,23 +433,31 @@ export const RoomInput = forwardRef<HTMLDivElement, RoomInputProps>(
     };
 
     const handleStickerSelect = async (mxc: string, shortcode: string, label: string) => {
-      const stickerUrl = mxcUrlToHttp(mx, mxc, useAuthentication);
-      if (!stickerUrl) return;
-
-      const info = await getImageInfo(
-        await loadImageElement(stickerUrl),
-        await getImageUrlBlob(stickerUrl)
-      );
-
-      mx.sendEvent(roomId, EventType.Sticker, {
-        body: label,
-        url: mxc,
-        info,
-      });
+      setStickerError(undefined);
+      try {
+        const builtin = getBuiltinSticker(mxc);
+        const stickerUrl = builtin ? mxc : mxcUrlToHttp(mx, mxc, useAuthentication);
+        if (!stickerUrl) return;
+        const info = builtin
+          ? { w: builtin.w, h: builtin.h, size: builtin.size, mimetype: builtin.mimetype }
+          : await getImageInfo(
+              await loadImageElement(stickerUrl),
+              await getImageUrlBlob(stickerUrl)
+            );
+        const url = builtin ? await uploadBuiltinSticker(mx, mxc) : mxc;
+        await mx.sendEvent(roomId, EventType.Sticker, { body: label, url, info });
+      } catch {
+        setStickerError('Could not send the sticker. Please try again.');
+      }
     };
 
     return (
       <div ref={ref}>
+        {stickerError && (
+          <Text role="alert" size="T300">
+            {stickerError}
+          </Text>
+        )}
         {selectedFiles.length > 0 && (
           <UploadBoard
             header={
@@ -637,20 +647,28 @@ export const RoomInput = forwardRef<HTMLDivElement, RoomInputProps>(
                   >
                     {!hideStickerBtn && (
                       <IconButton
-                        aria-pressed={emojiBoardTab === EmojiBoardTab.Sticker}
-                        onClick={() => setEmojiBoardTab(EmojiBoardTab.Sticker)}
+                        aria-label="Stickers"
+                        aria-pressed={
+                          emojiBoardTab === EmojiBoardTab.Sticker ||
+                          emojiBoardTab === EmojiBoardTab.SekaiSticker
+                        }
+                        onClick={() => setEmojiBoardTab(EmojiBoardTab.SekaiSticker)}
                         variant="SurfaceVariant"
                         size="300"
                         radii="300"
                       >
                         <Icon
                           src={Icons.Sticker}
-                          filled={emojiBoardTab === EmojiBoardTab.Sticker}
+                          filled={
+                            emojiBoardTab === EmojiBoardTab.Sticker ||
+                            emojiBoardTab === EmojiBoardTab.SekaiSticker
+                          }
                         />
                       </IconButton>
                     )}
                     <IconButton
                       ref={emojiBtnRef}
+                      aria-label="Emoji"
                       aria-pressed={
                         hideStickerBtn ? !!emojiBoardTab : emojiBoardTab === EmojiBoardTab.Emoji
                       }

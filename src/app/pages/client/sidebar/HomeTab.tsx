@@ -26,6 +26,7 @@ import { markAsRead } from '../../../utils/notifications';
 import { stopPropagation } from '../../../utils/keyboard';
 import { useSetting } from '../../../state/hooks/settings';
 import { settingsAtom } from '../../../state/settings';
+import { homeIcon } from '../../../../nightcord/theme.css';
 
 type HomeMenuProps = {
   requestClose: () => void;
@@ -100,11 +101,12 @@ export function HomeTab() {
           <SidebarAvatar
             as="button"
             ref={triggerRef}
+            aria-label="Home"
             outlined
             onClick={handleHomeClick}
             onContextMenu={handleContextMenu}
           >
-            <Icon src={Icons.Home} filled={homeSelected} />
+            <span className={homeIcon} aria-hidden="true" />
           </SidebarAvatar>
         )}
       </SidebarItemTooltip>

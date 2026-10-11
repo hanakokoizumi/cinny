@@ -2,9 +2,9 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { enableMapSet } from 'immer';
-import '@fontsource/inter/variable.css';
 import 'folds/dist/style.css';
 import { configClass, varsClass } from 'folds';
+import { nightcordConfig } from './nightcord/theme.css';
 
 enableMapSet();
 
@@ -18,7 +18,7 @@ import './app/i18n';
 import { pushSessionToSW } from './sw-session';
 import { getFallbackSession } from './app/state/sessions';
 
-document.body.classList.add(configClass, varsClass);
+document.body.classList.add(configClass, varsClass, nightcordConfig);
 
 // Register Service Worker
 if ('serviceWorker' in navigator) {

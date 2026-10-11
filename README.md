@@ -1,4 +1,15 @@
-# Cinny
+# Nightcord
+
+基于 [Cinny](https://github.com/cinnyapp/cinny) 的 Matrix 客户端，使用与 Nightcord Mastodon 一致的磨砂主题和图标，内置 1,205 张世界计划日语贴纸。默认服务器为 `nightcord.de`。
+
+- 在线使用：[chat.nightcord.de](https://chat.nightcord.de)
+- 开发、贴纸同步及自动部署：[NIGHTCORD.md](NIGHTCORD.md)
+- `main` 分支推送后由 GitHub Actions 自动构建并发布至 GitHub Pages。
+
+本项目保留 Cinny 的 AGPL-3.0 许可证及原贡献者信息。以下为上游项目说明。
+
+## Cinny
+
 <p>
     <a href="https://github.com/ajbura/cinny/releases">
         <img alt="GitHub release downloads" src="https://img.shields.io/github/downloads/ajbura/cinny/total?logo=github&style=social"></a>
@@ -15,19 +26,21 @@
 A Matrix client focusing primarily on simple, elegant and secure interface.
 The main goal is to have an instant messaging application that is easy on
 people and has a modern touch.
+
 - [Roadmap](https://github.com/orgs/cinnyapp/projects/1)
 - [Contributing](./CONTRIBUTING.md)
 
-> [!IMPORTANT] 
-We are currently in the process of [replacing] the matrix-js-sdk with our
-own SDK. As a result, we will not be accepting any pull requests until
-further notice. Thank you for your understanding.
+> [!IMPORTANT]
+> We are currently in the process of [replacing] the matrix-js-sdk with our
+> own SDK. As a result, we will not be accepting any pull requests until
+> further notice. Thank you for your understanding.
 
 [replacing]: https://github.com/cinnyapp/cinny/issues/257#issuecomment-3714406704
 
 <img align="center" src="https://raw.githubusercontent.com/cinnyapp/cinny-site/main/assets/preview2-light.png" height="380">
 
 ## Getting started
+
 The web app is available at [app.cinny.in] and gets updated on each new
 release. The `dev` branch is continuously deployed at [dev.cinny.in]
 but keep in mind that it could have things broken.
@@ -36,7 +49,7 @@ You can also download our desktop app from the [cinny-desktop repository].
 
 [app.cinny.in]: https://app.cinny.in
 [dev.cinny.in]: https://dev.cinny.in
-[cinny-desktop repository]: https://github.com/cinnyapp/cinny-desktop 
+[cinny-desktop repository]: https://github.com/cinnyapp/cinny-desktop
 
 ## Contributing and Developing
 
@@ -47,29 +60,28 @@ to get involved with Cinny's development as well should also read the
 ["Developing Cinny"](HACKING.md) document for more technical details.
 
 ## Self-hosting
+
 To host Cinny on your own, simply download the tarball from
 [GitHub releases], and serve the files from `dist/` using your preferred
 webserver. Alternatively, you can just pull the docker image from
 [DockerHub] or [GitHub Container Registry].
 
-* The default homeservers and explore pages are defined in [`config.json`](config.json).
+- The default homeservers and explore pages are defined in [`config.json`](config.json).
 
-* You need to set up redirects to serve the assests. Example configurations;
-[netlify](netlify.toml), [nginx](contrib/nginx/cinny.domain.tld.conf),
-[caddy](contrib/caddy/caddyfile).
-    * If you have trouble configuring redirects you can
-    [enable hash routing](config.json#L35) — the url in the browser will have
-    a `/#/` between the domain and open channel (ie. `app.cinny.in/#/home/`
-    instead of `app.cinny.in/home/`) but you won't have to configure your webserver.
+- You need to set up redirects to serve the assests. Example configurations;
+  [netlify](netlify.toml), [nginx](contrib/nginx/cinny.domain.tld.conf),
+  [caddy](contrib/caddy/caddyfile). \* If you have trouble configuring redirects you can
+  [enable hash routing](config.json#L35) — the url in the browser will have
+  a `/#/` between the domain and open channel (ie. `app.cinny.in/#/home/`
+  instead of `app.cinny.in/home/`) but you won't have to configure your webserver.
 
-* To deploy on subdirectory, you need to rebuild the app youself after
-updating the `base` path in [`build.config.ts`](build.config.ts).
-    * For example, if you want to deploy on `https://cinny.in/app`, then
-    set `base: '/app'`.
+- To deploy on subdirectory, you need to rebuild the app youself after
+  updating the `base` path in [`build.config.ts`](build.config.ts). \* For example, if you want to deploy on `https://cinny.in/app`, then
+  set `base: '/app'`.
 
-[GitHub releases]: https://github.com/cinnyapp/cinny/releases/latest
-[DockerHub]: https://hub.docker.com/r/ajbura/cinny
-[GitHub Container Registry]: https://github.com/cinnyapp/cinny/pkgs/container/cinny
+[github releases]: https://github.com/cinnyapp/cinny/releases/latest
+[dockerhub]: https://hub.docker.com/r/ajbura/cinny
+[github container registry]: https://github.com/cinnyapp/cinny/pkgs/container/cinny
 
 <details><summary><b>PGP Public Key to verify tarball</b></summary>
 
@@ -116,13 +128,15 @@ mxFo+ioe/ABCufSmyqFye0psX3Sp
 =WtqZ
 -----END PGP PUBLIC KEY BLOCK-----
 ```
+
 </details>
 
 ## License
+
 Cinny Project  
 Copyright © 2024–present Ajay Bura  
-https://cinny.in  
+https://cinny.in
 
-Cinny is licensed under the GNU Affero General Public License, 
+Cinny is licensed under the GNU Affero General Public License,
 Version 3 of the License (AGPL-3.0-only).
 You may obtain a copy of the License at https://www.gnu.org/licenses/agpl-3.0.html

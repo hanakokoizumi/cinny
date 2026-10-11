@@ -10,6 +10,8 @@ export const Base = style({
   width: `calc(100vw - 2 * ${config.space.S400})`,
   height: toRem(450),
   backgroundColor: color.Surface.Container,
+  backdropFilter: 'blur(28px) saturate(1.35)',
+  WebkitBackdropFilter: 'blur(28px) saturate(1.35)',
   color: color.Surface.OnContainer,
   border: `${config.borderWidth.B300} solid ${color.Surface.ContainerLine}`,
   borderRadius: config.radii.R400,

@@ -1,48 +1,28 @@
-import fs from "fs";
-import path from "path";
-import { execSync } from "child_process";
-import { fileURLToPath } from "url";
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const version = process.argv[2];
-
-if (!version) {
-  console.error("Version argument missing");
+const requested = process.argv[2];
+if (!requested || !/^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/.test(requested)) {
+  console.error('Usage: pnpm bump <version>, for example pnpm bump 4.13.0');
   process.exit(1);
 }
 
-const root = path.resolve(__dirname, "..");
-const newVersionTag = `v${version}`;
+const version = requested.endsWith('-nightcord') ? requested : `${requested}-nightcord`;
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const packagePath = path.join(root, 'package.json');
+const pkg = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
+pkg.version = version;
+fs.writeFileSync(packagePath, `${JSON.stringify(pkg, null, 2)}\n`);
 
-// Update package.json + package-lock.json safely
-execSync(`npm version ${version} --no-git-tag-version`, {
-  cwd: root,
-  stdio: "inherit",
-});
+// Keep the upstream npm lock metadata compatible; pnpm manages dependencies.
+const legacyLockPath = path.join(root, 'package-lock.json');
+if (fs.existsSync(legacyLockPath)) {
+  const lock = JSON.parse(fs.readFileSync(legacyLockPath, 'utf8'));
+  lock.version = version;
+  lock.packages[''].version = version;
+  fs.writeFileSync(legacyLockPath, `${JSON.stringify(lock, null, 2)}\n`);
+}
 
-console.log(`Updated package.json and package-lock.json → ${version}`);
-
-// Update UI version references
-const files = [
-  "src/app/features/settings/about/About.tsx",
-  "src/app/pages/auth/AuthFooter.tsx",
-  "src/app/pages/client/WelcomePage.tsx",
-];
-
-files.forEach((filePath) => {
-  const absPath = path.join(root, filePath);
-
-  if (!fs.existsSync(absPath)) {
-    console.warn(`File not found: ${filePath}`);
-    return;
-  }
-
-  const content = fs.readFileSync(absPath, "utf8");
-  const updated = content.replace(/v\d+\.\d+\.\d+/g, newVersionTag);
-
-  fs.writeFileSync(absPath, updated);
-
-  console.log(`Updated ${filePath} → ${newVersionTag}`);
-});
+// Visible versions come from package.json through src/nightcord/brand.ts.
+console.log(`Updated Nightcord to v${version}`);

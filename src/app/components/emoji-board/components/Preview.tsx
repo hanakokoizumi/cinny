@@ -4,7 +4,7 @@ import { Atom, atom, useAtomValue } from 'jotai';
 import * as css from './styles.css';
 import { useMatrixClient } from '../../../hooks/useMatrixClient';
 import { useMediaAuthentication } from '../../../hooks/useMediaAuthentication';
-import { mxcUrlToHttp } from '../../../utils/matrix';
+import { getBuiltinSticker, resolveStickerUrl } from '../../../../nightcord/stickers';
 
 export type PreviewData = {
   key: string;
@@ -34,10 +34,10 @@ export function Preview({ previewAtom }: PreviewProps) {
           alignItems="Center"
           justifyContent="Center"
         >
-          {key.startsWith('mxc://') ? (
+          {key.startsWith('mxc://') || getBuiltinSticker(key) ? (
             <img
               className={css.PreviewImg}
-              src={mxcUrlToHttp(mx, key, useAuthentication) ?? key}
+              src={resolveStickerUrl(mx, key, useAuthentication) ?? key}
               alt={shortcode}
             />
           ) : (

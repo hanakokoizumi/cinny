@@ -1,7 +1,9 @@
 import React from 'react';
 import { Box, Button, Icon, Icons, Text, config, toRem } from 'folds';
+import { APP_NAME, APP_VERSION, APP_DESCRIPTION } from '../../../nightcord/brand';
+import { logo } from '../../../nightcord/theme.css';
 import { Page, PageHero, PageHeroSection } from '../../components/page';
-import CinnySVG from '../../../../public/res/svg/cinny.svg';
+import NightcordSVG from '../../../../public/res/svg/nightcord.svg';
 
 export function WelcomePage() {
   return (
@@ -14,17 +16,25 @@ export function WelcomePage() {
       >
         <PageHeroSection>
           <PageHero
-            icon={<img width="70" height="70" src={CinnySVG} alt="Cinny Logo" />}
-            title="Welcome to Cinny"
+            icon={
+              <img
+                className={logo}
+                width="70"
+                height="70"
+                src={NightcordSVG}
+                alt="Nightcord Logo"
+              />
+            }
+            title={`Welcome to ${APP_NAME}`}
             subTitle={
               <span>
-                Yet another matrix client.{' '}
+                {APP_DESCRIPTION}{' '}
                 <a
-                  href="https://github.com/cinnyapp/cinny/releases"
+                  href="https://github.com/hanakokoizumi/cinny/releases"
                   target="_blank"
                   rel="noreferrer noopener"
                 >
-                  v4.12.7
+                  v{APP_VERSION}
                 </a>
               </span>
             }
@@ -33,7 +43,7 @@ export function WelcomePage() {
               <Box grow="Yes" style={{ maxWidth: toRem(300) }} direction="Column" gap="300">
                 <Button
                   as="a"
-                  href="https://github.com/cinnyapp/cinny"
+                  href="https://github.com/hanakokoizumi/cinny"
                   target="_blank"
                   rel="noreferrer noopener"
                   before={<Icon size="200" src={Icons.Code} />}

@@ -2,6 +2,11 @@ import { style } from '@vanilla-extract/css';
 import { recipe, RecipeVariants } from '@vanilla-extract/recipes';
 import { DefaultReset, color, config, toRem } from 'folds';
 
+export const PageRoot = style({
+  gap: 'var(--nc-gap-panel)',
+  minWidth: 0,
+});
+
 export const PageNav = recipe({
   variants: {
     size: {
@@ -63,6 +68,7 @@ export const PageHeader = recipe({
   base: {
     paddingLeft: config.space.S400,
     paddingRight: config.space.S200,
+    selectors: { '&&': { backgroundColor: 'transparent' } },
   },
   variants: {
     balance: {
@@ -110,7 +116,6 @@ export const PageHeroSection = style([
     margin: 'auto',
   },
 ]);
-
 
 export const PageContentCenter = style([
   DefaultReset,
